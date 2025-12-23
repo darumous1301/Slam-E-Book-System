@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap"
+      rel="stylesheet"
+    />
+    <title>slamebook reports</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "Quicksand", Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url(finalbg.png);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #fff6d9;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            font-size: 8em;
+            font-family: "Dancing Script", cursive;
+            text-align: center;
+            color: rgb(255, 255, 255);
+            text-shadow: #885109 8px 8px 16px;
+            margin-bottom: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        h2 {
+            color: #A72703;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #84994F;
+        }
+        .subtitle {
+            text-align: center;
+            color: #A72703;
+            margin-bottom: 40px;
+        }
+        .nav-buttons {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background-color: #84994F;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            margin: 0 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #84994F;
+        }
+        .stat-card h3 {
+            color: #5B532C;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #5B532C;
+            text-align: center;
+        }
+        .stat-label {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .chart-title {
+            color: #5B532C;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .bar-label {
+            min-width: 200px;
+            color: #666;
+            font-weight: 600;
+        }
+        .bar-fill {
+            height: 30px;
+            background: linear-gradient(135deg, #802c2d 0%, rgb(185, 115, 75) 100%);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            color: white;
+            font-weight: 600;
+            min-width: 50px;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.5em;
+            color: #e6b607;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f8f9fa;
+            color: #333;
+            font-weight: 600;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .info-box {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #4a90e2;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .percentage {
+            color: #4caf50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Slam E-Book Reports</h1>
+        <p class="subtitle">A host for generating queries to retrieve data. This section showcase the use of basic MySql commands and aggregate functions to obtain the statistical display of various data entries form the database.</p>
+        
+        <div class="nav-buttons">
+            <button class="btn" onclick="loadReports()">📄 REFRESH DATA</button>
+        </div>
+
+        <div id="loading" class="loading">Loading reports...</div>
+        <div id="reportsContainer" style="display:none;">
+            
+            <!-- ===== REPORTS SECTION ===== -->
+            <h2>📈 Basic Reports</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Users</h3>
+                    <div class="stat-number" id="totalUsers">0</div>
+                    <div class="stat-label">All Entries</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Users with Contact</h3>
+                    <div class="stat-number" id="usersWithContact">0</div>
+                    <div class="stat-label">Phone & Email</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">👥 Gender Distribution</h3>
+                <div id="genderChart"></div>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">💑 Relationship Status</h3>
+                <div id="relationshipChart"></div>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Recent 5 Entries</h3>
+                <table id="recentEntriesTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Date Added</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentEntriesBody"></tbody>
+                </table>
+            </div>
+
+            <h2>🔍 Advanced Analytics (Aggregate Reports)</h2>
+
+            <!-- 1. User Statistics -->
+            <div class="chart-container">
+                <h3 class="chart-title">👥 User Statistics Summary</h3>
+                <table>
+                    <tr>
+                        <td><strong>Total Users:</strong></td>
+                        <td id="agg-totalUsers">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Male Count:</strong></td>
+                        <td id="agg-maleCount">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Female Count:</strong></td>
+                        <td id="agg-femaleCount">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Average Age:</strong></td>
+                        <td id="agg-avgAge">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Contacts Available:</strong></td>
+                        <td id="agg-contactsAvailable">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Oldest Birthday:</strong></td>
+                        <td id="agg-oldestBirthday">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Youngest Birthday:</strong></td>
+                        <td id="agg-youngestBirthday">-</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- 2. Favorites -->
+            <div class="chart-container">
+                <h3 class="chart-title">⭐ Most Popular Favorites</h3>
+                <table>
+                    <tr>
+                        <td><strong>Total with Favorites:</strong></td>
+                        <td id="agg-totalWithFavorites">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Most Popular Color:</strong></td>
+                        <td id="agg-mostPopularColor">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Most Popular Food:</strong></td>
+                        <td id="agg-mostPopularFood">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Most Popular Movie:</strong></td>
+                        <td id="agg-mostPopularMovie">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Most Popular Hobby:</strong></td>
+                        <td id="agg-mostPopularHobby">-</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- 3. Personality Traits -->
+            <div class="chart-container">
+                <h3 class="chart-title">🎭 Personality Traits Summary</h3>
+                <table>
+                    <tr>
+                        <td><strong>Total with Traits:</strong></td>
+                        <td id="agg-totalWithTraits">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dream Job Count:</strong></td>
+                        <td id="agg-dreamJobCount">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Superpower Count:</strong></td>
+                        <td id="agg-superpowerCount">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Biggest Fear Count:</strong></td>
+                        <td id="agg-fearCount">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Happiest Memory Count:</strong></td>
+                        <td id="agg-memoryCount">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Completion Percentage:</strong></td>
+                        <td><span class="percentage" id="agg-completionPercentage">-%</span></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- 4. Relationship Statistics -->
+            <div class="chart-container">
+                <h3 class="chart-title">💕 Relationship Statistics</h3>
+                <table>
+                    <tr>
+                        <td><strong>Total with Relationships:</strong></td>
+                        <td id="agg-totalWithRelationships">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Single:</strong></td>
+                        <td id="agg-singleCount">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>In a Relationship:</strong></td>
+                        <td id="agg-inRelationshipCount">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Married:</strong></td>
+                        <td id="agg-marriedCount">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Has a Crush:</strong></td>
+                        <td id="agg-hasCrush">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Has Celebrity Crush:</strong></td>
+                        <td id="agg-hasCelebrityCrush">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Has Best Friend:</strong></td>
+                        <td id="agg-hasBestFriend">-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Crush Percentage:</strong></td>
+                        <td><span class="percentage" id="agg-crushPercentage">-%</span></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- 5. Profile Completion -->
+            <div class="chart-container">
+                <h3 class="chart-title">✅ Top 10 Most Complete Profiles</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Completion %</th>
+                            <th>Sections Filled</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profileCompletionBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'api.php';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadReports();
+        });
+
+        async function loadReports() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('reportsContainer').style.display = 'none';
+
+            try {
+                const response = await fetch(API_URL + '?action=reports');
+                const result = await response.json();
+
+                if (result.success) {
+                    displayBasicReports(result.reports.basicReports);
+                    displayAggregateReports(result.reports.aggregateReports);
+                } else {
+                    alert('Error loading reports: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('reportsContainer').style.display = 'block';
+            }
+        }
+
+        function displayBasicReports(basicReports) {
+            // Total Users
+            document.getElementById('totalUsers').textContent = basicReports.totalUsers;
+            document.getElementById('usersWithContact').textContent = basicReports.usersWithContact;
+
+            // Gender Distribution
+            displayBarChart('genderChart', basicReports.genderDistribution);
+
+            // Relationship Status
+            displayBarChart('relationshipChart', basicReports.relationshipStatus);
+
+            // Recent Entries
+            displayRecentEntries(basicReports.recentEntries);
+        }
+
+        function displayAggregateReports(aggregateReports) {
+            // 1. User Statistics
+            const userStats = aggregateReports.userStatistics;
+            if (userStats) {
+                document.getElementById('agg-totalUsers').textContent = userStats.totalUsers;
+                document.getElementById('agg-maleCount').textContent = userStats.maleCount;
+                document.getElementById('agg-femaleCount').textContent = userStats.femaleCount;
+                document.getElementById('agg-avgAge').textContent = userStats.avgAge + ' years';
+                document.getElementById('agg-contactsAvailable').textContent = userStats.contactsAvailable;
+                document.getElementById('agg-oldestBirthday').textContent = userStats.oldestBirthday || 'N/A';
+                document.getElementById('agg-youngestBirthday').textContent = userStats.youngestBirthday || 'N/A';
+            }
+
+            // 2. Favorites Aggregate
+            const favoritesAgg = aggregateReports.favoritesAggregate;
+            if (favoritesAgg) {
+                document.getElementById('agg-totalWithFavorites').textContent = favoritesAgg.totalWithFavorites;
+                document.getElementById('agg-mostPopularColor').textContent = favoritesAgg.mostPopularColor || 'N/A';
+                document.getElementById('agg-mostPopularFood').textContent = favoritesAgg.mostPopularFood || 'N/A';
+                document.getElementById('agg-mostPopularMovie').textContent = favoritesAgg.mostPopularMovie || 'N/A';
+                document.getElementById('agg-mostPopularHobby').textContent = favoritesAgg.mostPopularHobby || 'N/A';
+            }
+
+            // 3. Personality Traits Aggregate
+            const personalityAgg = aggregateReports.personalityAggregate;
+            if (personalityAgg) {
+                document.getElementById('agg-totalWithTraits').textContent = personalityAgg.totalWithTraits;
+                document.getElementById('agg-dreamJobCount').textContent = personalityAgg.dreamJobCount;
+                document.getElementById('agg-superpowerCount').textContent = personalityAgg.superpowerCount;
+                document.getElementById('agg-fearCount').textContent = personalityAgg.fearCount;
+                document.getElementById('agg-memoryCount').textContent = personalityAgg.memoryCount;
+                document.getElementById('agg-completionPercentage').textContent = personalityAgg.completionPercentage + '%';
+            }
+
+            // 4. Relationship Statistics
+            const relationshipAgg = aggregateReports.relationshipAggregate;
+            if (relationshipAgg) {
+                document.getElementById('agg-totalWithRelationships').textContent = relationshipAgg.totalWithRelationships;
+                document.getElementById('agg-singleCount').textContent = relationshipAgg.singleCount;
+                document.getElementById('agg-inRelationshipCount').textContent = relationshipAgg.inRelationshipCount;
+                document.getElementById('agg-marriedCount').textContent = relationshipAgg.marriedCount;
+                document.getElementById('agg-hasCrush').textContent = relationshipAgg.hasCrush;
+                document.getElementById('agg-hasCelebrityCrush').textContent = relationshipAgg.hasCelebrityCrush;
+                document.getElementById('agg-hasBestFriend').textContent = relationshipAgg.hasBestFriend;
+                document.getElementById('agg-crushPercentage').textContent = relationshipAgg.crushPercentage + '%';
+            }
+
+            // 5. Profile Completion
+            const profileCompletion = aggregateReports.profileCompletion;
+            if (profileCompletion && profileCompletion.length > 0) {
+                const tbody = document.getElementById('profileCompletionBody');
+                tbody.innerHTML = profileCompletion.map(profile => `
+                    <tr>
+                        <td>${profile.UserID}</td>
+                        <td>${profile.FullName}</td>
+                        <td><span class="percentage">${profile.profileCompletionPercentage}%</span></td>
+                        <td>
+                            ${profile.hasFavorites ? '⭐' : ''} 
+                            ${profile.hasTraits ? '🎭' : ''} 
+                            ${profile.hasRelationships ? '💕' : ''}
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function displayBarChart(containerId, data) {
+            const container = document.getElementById(containerId);
+            
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="color: #999; text-align: center;">No data available</p>';
+                return;
+            }
+
+            const maxCount = Math.max(...data.map(item => parseInt(item.count)));
+            
+            container.innerHTML = data.map(item => {
+                const label = item.Gender || item.RelationshipStatus || item.FColor || item.FFood || item.FMovie || item.DreamJob || item.ageGroup || 'Unknown';
+                const count = parseInt(item.count);
+                const percentage = (count / maxCount) * 100;
+                
+                return `
+                    <div class="bar">
+                        <div class="bar-label">${label}</div>
+                        <div class="bar-fill" style="width: ${percentage}%">${count}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function displayRecentEntries(entries) {
+            const tbody = document.getElementById('recentEntriesBody');
+            
+            if (!entries || entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #999;">No recent entries</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = entries.map(entry => `
+                <tr>
+                    <td>${entry.UserID}</td>
+                    <td>${entry.FullName}</td>
+                    <td>${new Date(entry.CreatedAt).toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

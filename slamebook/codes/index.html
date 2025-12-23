@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap"
+      rel="stylesheet"
+    />
+    <title>slamebook</title>
+    <style>
+      /*TO DO: CSS Styling*/
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Quicksand", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(
+          circle,
+          rgba(255, 255, 255, 1) 0%,
+          rgba(255, 249, 237, 1) 14%,
+          rgba(254, 245, 195, 1) 41%,
+          rgba(253, 187, 45, 1) 100%
+        );
+        min-height: 100vh;
+        padding: 40px 20px;
+      }
+      .header {
+        background-image: url("headerbg.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        height: 100vh;
+        text-align: center;
+        color: rgb(252, 236, 66);
+        margin-bottom: 90px;
+        text-shadow: #885109 8px 8px 16px;
+
+        display: ruby-base-container;
+        justify-content: start;
+        align-items: center;
+        flex-direction: column;
+      }
+      .header h1 {
+        font-size: 12em;
+        font-family: "Dancing Script", cursive;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+      }
+      .header p {
+        font-size: 1.8em;
+        font-weight: 700;
+        color: #5b532c;
+        text-shadow: none;
+        opacity: 0.9;
+      }
+
+      .add-btn {
+        background: #63a361;
+        color: #fffafa;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1em;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .add-btn:hover {
+        transform: translateY(-3px);
+      }
+      .cards-container {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(180px, 1fr));
+        gap: 20px;
+        max-width: 100%;
+        padding: 20px;
+      }
+      .card {
+        background: rgb(255, 255, 255);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        position: relative;
+        transition: transform 0.3s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+      }
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0f0f0;
+      }
+      .card-name {
+        flex: 1;
+      }
+      .card-name h2 {
+        font-size: 1.8em;
+        color: #5b532c;
+        margin-bottom: 5px;
+      }
+      .card-name .nickname {
+        font-size: 1em;
+        color: #f17203;
+        font-style: italic;
+      }
+      .card-id {
+        background: linear-gradient(135deg, #eadf66 0%, #de9048 100%);
+        color: white;
+        aspect-ratio: 1 / 1;
+        width: 20%;
+        max-width: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.2em;
+      }
+      .card-actions {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        gap: 10px;
+      }
+      .icon-btn {
+        background: #f0f0f0;
+        border: none;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+      }
+      .icon-btn:hover {
+        background: #eadf66;
+        color: white;
+      }
+      .card-content {
+        display: grid;
+        gap: 15px;
+      }
+      .info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .info-icon {
+        font-size: 1.3em;
+        min-width: 30px;
+      }
+      .info-label {
+        font-size: 0.85em;
+        color: #888;
+        margin-bottom: 3px;
+      }
+      .info-value {
+        color: #333;
+        font-weight: 500;
+      }
+      .quote-section {
+        background-color: #a9e8a6;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 15px;
+        font-style: italic;
+        color: #5b532c;
+        border-left: 4px solid #5b532c;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .modal.active {
+        display: flex;
+      }
+      .modal-content {
+        background: white; 
+        background-image: url(viewEntryBg.png);
+        background-size: cover; 
+        background-repeat: no-repeat; 
+        background-position: center; 
+        background-attachment: scroll; 
+
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
+        width: 100%;
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+      .modal-header h2 {
+        color: #ebb01b;
+        font-size: 2em;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 2em;
+        cursor: pointer;
+        color: #999;
+      }
+      .close-btn:hover {
+        color: #333;
+      }
+      .form-section {
+        margin-bottom: 30px;
+      }
+      .section-title {
+        background: linear-gradient(135deg, #e5db18 0%, #e6b607 100%);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+      .view-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .view-section {
+        margin-bottom: 30px;
+      }
+      .view-section-title {
+        background: linear-gradient(135deg, #e5db18 0%, #e6b607 100%);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-style: italic;
+        font-size: larger;
+        margin-bottom: 15px;
+      }
+      .view-item {
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      .view-item:last-child {
+        border-bottom: none;
+      }
+      .view-label {
+        font-size: 0.85em;
+        color: #888;
+        margin-bottom: 3px;
+      }
+      .view-value {
+        color: #333;
+        font-weight: 500;
+        font-size: 1.1em;
+      }
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #63a361;
+        font-weight: 600;
+        font-size: 0.9em;
+      }
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+        font-family: "Raleway", sans-serif;;
+        box-shadow: #333 0.5px 0.5px 2px;
+      }
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #e7c414;
+      }
+      textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #bc2e06 0%, #e6b607 100%);
+        color: white;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 1em;
+        font-weight: 600;
+        transition: transform 0.3s;
+        margin-right: 10px;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+      }
+      .btn-secondary {
+        background: #e0e0e0;
+        color: #333;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 1em;
+        font-weight: 600;
+      }
+      .loading {
+        text-align: center;
+        color: white;
+        font-size: 1.5em;
+        padding: 50px;
+      }
+      .no-entries {
+        text-align: center;
+        color: white;
+        font-size: 1.3em;
+        padding: 50px;
+      }
+      .message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 20px 30px;
+        border-radius: 10px;
+        z-index: 2000;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        display: none;
+        animation: slideIn 0.3s;
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateX(400px);
+        }
+        to {
+          transform: translateX(0);
+        }
+      }
+      .message.success {
+        background: #28a745;
+        color: white;
+      }
+      .message.error {
+        background: #dc3545;
+        color: white;
+      }
+      @media (max-width: 768px) {
+        .cards-container {
+          grid-template-columns: 1fr;
+        }
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+        .header h1 {
+          font-size: 2em;
+        }
+      }
+
+      /* TO DO WIZARD STYLING FEATURE */
+      .wizard-modal {
+        max-width: 960px;
+        background: url("modalingheader.png") no-repeat center center/cover;
+      }
+
+      .progress-container {
+        margin: 20px 0 30px 0;
+        text-align: center;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 10px;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          #4caf50 0%,
+          #8bc34a 50%,
+          #cddc39 100%
+        );
+        transition: width 0.3s ease;
+        width: 25%;
+      }
+
+      .progress-text {
+        color: #5b532c;
+        font-weight: 600;
+        font-size: 0.9em;
+      }
+
+      .form-step {
+        display: none !important;
+        animation: fadeIn 0.4s;
+      }
+
+      .form-step.active {
+        display: block !important;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .step-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        border-radius: 15px;
+      }
+
+      .step-icon {
+        font-size: 3em;
+        margin-bottom: 10px;
+      }
+
+      .step-title {
+        color: rgb(252, 236, 66);
+        font-size: 8em;
+        font-family: dancing script, cursive;
+        margin-bottom: 3px;
+        text-shadow: #885109 4px 4px 8px;
+      }
+
+      .step-subtitle {
+        color: #8b7e3f;
+        font-size: 1em;
+      }
+
+      .label-icon {
+        margin-right: 8px;
+      }
+
+      .wizard-navigation {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 2px solid #e0e0e0;
+      }
+
+      .btn-wizard {
+        flex: 1;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .btn-prev {
+        background: #e0e0e0;
+        color: #333;
+      }
+
+      .btn-prev:hover {
+        background: #d0d0d0;
+        transform: translateX(-3px);
+      }
+
+      .btn-next {
+        background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+        color: white;
+      }
+
+      .btn-next:hover {
+        background: linear-gradient(135deg, #45a049 0%, #7cb342 100%);
+        transform: translateX(3px);
+      }
+
+      .btn-submit {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+        color: white;
+      }
+
+      .btn-submit:hover {
+        background: linear-gradient(135deg, #ee5a52 0%, #ff7043 100%);
+        transform: scale(1.05);
+      }
+
+      .wizard-footer {
+        text-align: center;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 2px solid #e0e0e0;
+        color: #8b7e3f;
+        font-style: italic;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Slam E-book</h1>
+      <p>Where friendships live forever in digital pages.</p>
+      <br />
+      <button class="add-btn" onclick="openAddModal()">
+        ✨ Add Your Entry
+      </button>
+      <button
+        class="add-btn"
+        style="background: #4a90e2"
+        onclick="openSearchModal()"
+      >
+        🔍 Search Entries
+      </button>
+    </div>
+
+    <div id="message" class="message"></div>
+    <div id="loadingDiv" class="loading">Loading entries...</div>
+    <div id="cardsContainer" class="cards-container"></div>
+
+    <!-- SEARCH Modal -->
+    <div id="searchModal" class="modal">
+      <div class="modal-content" style="max-width: 600px">
+        <div class="modal-header">
+          <h2>🔍 Search Entries</h2>
+          <button class="close-btn" onclick="closeSearchModal()">
+            &times;
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="searchColumn">Search By:</label>
+          <select id="searchColumn" style="margin-bottom: 15px">
+            <optgroup label="Personal Info">
+              <option value="FullName">Full Name</option>
+              <option value="NickName">Nickname</option>
+              <option value="Gender">Gender</option>
+            </optgroup>
+            <optgroup label="Favorites">
+              <option value="FColor">Favorite Color</option>
+              <option value="FFood">Favorite Food</option>
+              <option value="FMovie">Favorite Movie</option>
+              <option value="FSeries">Favorite Series</option>
+              <option value="FArtist">Favorite Artist</option>
+              <option value="FSong">Favorite Song</option>
+              <option value="FBook">Favorite Book</option>
+              <option value="FSubject">Favorite Subject</option>
+              <option value="FHobby">Favorite Hobby</option>
+              <option value="FPlace">Favorite Place</option>
+              <option value="FSports">Favorite Sports</option>
+            </optgroup>
+            <optgroup label="Personality">
+              <option value="DreamJob">Dream Job</option>
+              <option value="SuperPower">Superpower</option>
+              <option value="BiggestFear">Biggest Fear</option>
+            </optgroup>
+            <optgroup label="Relationships">
+              <option value="BestFriend">Best Friend</option>
+              <option value="RelationshipStatus">Relationship Status</option>
+              <option value="CelebrityCrush">Celebrity Crush</option>
+              <option value="Crush">Crush</option>
+            </optgroup>
+          </select>
+
+          <label for="searchValue">Search For:</label>
+          <input
+            type="text"
+            id="searchValue"
+            placeholder="e.g., Sinigang"
+            style="margin-bottom: 20px"
+          />
+
+          <button class="btn-primary" onclick="performSearch()">Search</button>
+          <button class="btn-secondary" onclick="clearSearch()">
+            Show All
+          </button>
+        </div>
+
+        <div
+          id="searchResults"
+          style="margin-top: 20px; max-height: 400px; overflow-y: auto"
+        ></div>
+      </div>
+    </div>
+
+    <!-- VIEW Modal (Read-only) -->
+    <div id="viewModal" class="modal">
+      <div class="modal-content" style="max-width: 900px">
+        <div class="modal-header">
+          <h2>📖 Entry Details</h2>
+          <button class="close-btn" onclick="closeViewModal()">&times;</button>
+        </div>
+        <div id="viewModalContent" class="view-grid"></div>
+        <div
+          style="
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+            border-top: 2px solid #e0e0e0;
+            padding-top: 20px;
+          "
+        >
+          <button class="btn-secondary" onclick="closeViewModal()">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Modal with Multi-Step Form -->
+    <div id="entryModal" class="modal">
+      <div class="modal-content wizard-modal">
+        <div class="modal-header">
+          <h2 id="modalTitle"> My Slam E-book </h2>
+          <button class="close-btn" onclick="closeModal()">&times;</button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="progress-text">
+            Step <span id="currentStep">1</span> of 4
+          </div>
+        </div>
+
+        <form id="slamebook">
+          <input type="hidden" id="userId" name="userId" />
+
+          <!-- Step 1: Personal Information -->
+          <div class="form-step active" data-step="1">
+            <div class="step-header">
+              <h3 class="step-title">Basic Information</h3>
+              <p class="step-subtitle">Tell us about yourself!</p>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="fullName">
+                  <span class="label-icon">📝</span>
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  id="fullName"
+                  name="fullName"
+                  placeholder="Firstname M.I. Lastname"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="nickName">
+                  <span class="label-icon">😊</span>
+                  Nickname *
+                </label>
+                <input
+                  type="text"
+                  id="nickName"
+                  name="nickName"
+                  placeholder="Any nickname you go by"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="bday">
+                  <span class="label-icon">🎂</span>
+                  Birthday
+                </label>
+                <input type="date" id="bday" name="bday" />
+              </div>
+              <div class="form-group">
+                <label for="gender">
+                  <span class="label-icon">⚧</span>
+                  Gender
+                </label>
+                <select id="gender" name="gender">
+                  <option value="">Select...</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contactNumber">
+                  <span class="label-icon">📱</span>
+                  Contact Number
+                </label>
+                <input
+                  type="text"
+                  id="contactNumber"
+                  name="contactNumber"
+                  placeholder="+1 234 567 8900"
+                />
+              </div>
+              <div class="form-group">
+                <label for="emailAdd">
+                  <span class="label-icon">✉️</span>
+                  Email Address*
+                </label>
+                <input
+                  type="email"
+                  id="emailAdd"
+                  name="emailAdd"
+                  placeholder="name@example.com"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Your Favorites -->
+          <div class="form-step" data-step="2">
+            <div class="step-header">
+              <div class="step-icon">⭐</div>
+              <h3 class="step-title">Your Favorites</h3>
+              <p class="step-subtitle">
+                What are your favorite things? Share what makes you happy! ✨
+              </p>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="fColor">
+                  <span class="label-icon">🎨</span>
+                  Favorite Color *
+                </label>
+                <input
+                  type="text"
+                  id="fColor"
+                  name="fColor"
+                  placeholder="Sky blue"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="fFood">
+                  <span class="label-icon">🍕</span>
+                  Favorite Food*
+                </label>
+                <input
+                  type="text"
+                  id="fFood"
+                  name="fFood"
+                  placeholder="Pizza"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="fMovie">
+                  <span class="label-icon">🎬</span>
+                  Favorite Movie*
+                </label>
+                <input
+                  type="text"
+                  id="fMovie"
+                  name="fMovie"
+                  placeholder="The Shawshank Redemption"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="fSeries">
+                  <span class="label-icon">📺</span>
+                  Favorite Series*
+                </label>
+                <input
+                  type="text"
+                  id="fSeries"
+                  name="fSeries"
+                  placeholder="Stranger Things"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="fArtist">
+                  <span class="label-icon">🎤</span>
+                  Favorite Artist*
+                </label>
+                <input
+                  type="text"
+                  id="fArtist"
+                  name="fArtist"
+                  placeholder="Taylor Swift"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="fSong">
+                  <span class="label-icon">🎵</span>
+                  Favorite Song*
+                </label>
+                <input
+                  type="text"
+                  id="fSong"
+                  name="fSong"
+                  placeholder="Bohemian Rhapsody"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="fBook">
+                  <span class="label-icon">📖</span>
+                  Favorite Book*
+                </label>
+                <input
+                  type="text"
+                  id="fBook"
+                  name="fBook"
+                  placeholder="Harry Potter"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="fSubject">
+                  <span class="label-icon">🎓</span>
+                  Favorite Subject*
+                </label>
+                <input
+                  type="text"
+                  id="fSubject"
+                  name="fSubject"
+                  placeholder="Database Management System"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="fHobby">
+                  <span class="label-icon">💖</span>
+                  Favorite Hobby*
+                </label>
+                <input
+                  type="text"
+                  id="fHobby"
+                  name="fHobby"
+                  placeholder="Reading"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="fPlace">
+                  <span class="label-icon">📍</span>
+                  Favorite Place*
+                </label>
+                <input
+                  type="text"
+                  id="fPlace"
+                  name="fPlace"
+                  placeholder="Paris, France"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="fSports">
+                <span class="label-icon">🏆</span>
+                Favorite Sports*
+              </label>
+              <input
+                type="text"
+                id="fSports"
+                name="fSports"
+                placeholder="Basketball"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="fQuote">
+                <span class="label-icon">💭</span>
+                Favorite Quote
+              </label>
+              <textarea
+                id="fQuote"
+                name="fQuote"
+                placeholder="Stay awesome and keep smiling! 💖"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Step 3: Dreams & Personality -->
+          <div class="form-step" data-step="3">
+            <div class="step-header">
+              <div class="step-icon">🚀</div>
+              <h3 class="step-title">Dreams & Personality</h3>
+              <p class="step-subtitle">
+                Share your dreams and what makes you, YOU! 🌟
+              </p>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="dreamJob">
+                  <span class="label-icon">💼</span>
+                  Dream Job
+                </label>
+                <input
+                  type="text"
+                  id="dreamJob"
+                  name="dreamJob"
+                  placeholder="Astronaut"
+                />
+              </div>
+              <div class="form-group">
+                <label for="superPower">
+                  <span class="label-icon">⚡</span>
+                  Superpower You'd Want
+                </label>
+                <input
+                  type="text"
+                  id="superPower"
+                  name="superPower"
+                  placeholder="Flying"
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="biggestFear">
+                  <span class="label-icon">😱</span>
+                  Biggest Fear
+                </label>
+                <input
+                  type="text"
+                  id="biggestFear"
+                  name="biggestFear"
+                  placeholder="Heights"
+                />
+              </div>
+              <div class="form-group">
+                <label for="wordsThatDescribesYou">
+                  <span class="label-icon">✨</span>
+                  Words That Describes You
+                </label>
+                <input
+                  type="text"
+                  id="wordsThatDescribesYou"
+                  name="wordsThatDescribesYou"
+                  placeholder="Creative, Kind"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="happiestMemory">
+                <span class="label-icon">😊</span>
+                Happiest Memory
+              </label>
+              <textarea
+                id="happiestMemory"
+                name="happiestMemory"
+                placeholder="Describe your happiest moment..."
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="petPeeves">
+                <span class="label-icon">😤</span>
+                Pet Peeves
+              </label>
+              <textarea
+                id="petPeeves"
+                name="petPeeves"
+                placeholder="Things that annoy you..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Step 4: Relationships -->
+          <div class="form-step" data-step="4">
+            <div class="step-header">
+              <div class="step-icon">💕</div>
+              <h3 class="step-title">Relationships</h3>
+              <p class="step-subtitle">
+                Tell us about the special people in your life! 💖
+              </p>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="bestFriend">
+                  <span class="label-icon">👯</span>
+                  Best Friend
+                </label>
+                <input
+                  type="text"
+                  id="bestFriend"
+                  name="bestFriend"
+                  placeholder="Sarah"
+                />
+              </div>
+              <div class="form-group">
+                <label for="relationshipStatus">
+                  <span class="label-icon">💑</span>
+                  Relationship Status
+                </label>
+                <select id="relationshipStatus" name="relationshipStatus">
+                  <option value="">Select...</option>
+                  <option value="Single">Single</option>
+                  <option value="In a Relationship">In a Relationship</option>
+                  <option value="Married">Married</option>
+                  <option value="It's Complicated">It's Complicated</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="celebrityCrush">
+                  <span class="label-icon">🌟</span>
+                  Celebrity Crush
+                </label>
+                <input
+                  type="text"
+                  id="celebrityCrush"
+                  name="celebrityCrush"
+                  placeholder="Tom Holland"
+                />
+              </div>
+              <div class="form-group">
+                <label for="crush">
+                  <span class="label-icon">😍</span>
+                  Current Crush
+                </label>
+                <input
+                  type="text"
+                  id="crush"
+                  name="crush"
+                  placeholder="Someone special"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="idealDate">
+                <span class="label-icon">🌹</span>
+                Ideal Date
+              </label>
+              <input
+                type="text"
+                id="idealDate"
+                name="idealDate"
+                placeholder="Sunset picnic at the beach"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="dreamWedding">
+                <span class="label-icon">💒</span>
+                Dream Wedding
+              </label>
+              <input
+                type="text"
+                id="dreamWedding"
+                name="dreamWedding"
+                placeholder="Beach wedding at sunset"
+              />
+            </div>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div class="wizard-navigation">
+            <button
+              type="button"
+              class="btn-wizard btn-prev"
+              id="prevBtn"
+              onclick="changeStep(-1)"
+            >
+              ⬅️ Previous
+            </button>
+            <button
+              type="button"
+              class="btn-wizard btn-next"
+              id="nextBtn"
+              onclick="changeStep(1)"
+            >
+              Next ➡️
+            </button>
+            <button
+              type="submit"
+              class="btn-wizard btn-submit"
+              id="submitBtn"
+              style="display: none"
+            >
+              ✅ Submit Entry
+            </button>
+          </div>
+        </form>
+
+        <div class="wizard-footer">Save those memories</div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "api.php";
+      let allEntries = [];
+      let currentStepNumber = 1;
+      const totalSteps = 4;
+      let viewingEntryId = null;
+
+      // Initialize on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        loadEntries();
+        setupEventListeners();
+      });
+
+      // Setup all event listeners
+      function setupEventListeners() {
+        // Form submission
+        const form = document.getElementById("slamebook");
+        form.noValidate = true; // Disable default HTML5 validation
+        form.addEventListener("submit", handleFormSubmit);
+
+        // Close modals on outside click
+        document.getElementById("entryModal").addEventListener("click", (e) => {
+          if (e.target.id === "entryModal") closeModal();
+        });
+
+        document
+          .getElementById("searchModal")
+          .addEventListener("click", (e) => {
+            if (e.target.id === "searchModal") closeSearchModal();
+          });
+      }
+
+      // ===== FORM SUBMISSION =====
+      async function handleFormSubmit(e) {
+        e.preventDefault();
+
+        const userId = document.getElementById("userId").value.trim();
+        const action = userId ? "update" : "create";
+
+        const form = document.getElementById("slamebook");
+        const requiredFields = form.querySelectorAll("[required]");
+        requiredFields.forEach((field) => field.removeAttribute("required"));
+
+        const formData = new FormData(form);
+        formData.append("action", action);
+
+        console.log("Submitting with action:", action, "userId:", userId);
+
+        try {
+          const response = await fetch(API_URL, {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await response.json();
+          console.log("Server response:", result);
+
+          if (result.success) {
+            showMessage(result.message, "success");
+            closeModal();
+            loadEntries();
+          } else {
+            showMessage(result.message || "An error occurred", "error");
+          }
+        } catch (error) {
+          showMessage("Error: " + error.message, "error");
+          console.error("Fetch error:", error);
+        } finally {
+          requiredFields.forEach((field) =>
+            field.setAttribute("required", "required")
+          );
+        }
+      }
+
+      // ===== LOAD & DISPLAY =====
+      async function loadEntries() {
+        document.getElementById("loadingDiv").style.display = "block";
+        document.getElementById("cardsContainer").innerHTML = "";
+
+        try {
+          const response = await fetch(API_URL + "?action=list");
+          const result = await response.json();
+          if (result.success) {
+            allEntries = result.data;
+            displayCards(allEntries);
+          }
+        } catch (error) {
+          showMessage("Error loading entries", "error");
+        } finally {
+          document.getElementById("loadingDiv").style.display = "none";
+        }
+      }
+
+      function displayCards(entries) {
+        const container = document.getElementById("cardsContainer");
+
+        if (entries.length === 0) {
+          container.innerHTML =
+            '<div class="no-entries">No entries yet. Be the first to add yours! 🌟</div>';
+          return;
+        }
+
+        container.innerHTML = entries
+          .map(
+            (entry) => `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">
+          <h2>${entry.FullName || "Anonymous"}</h2>
+          ${
+            entry.NickName
+              ? `<div class="nickname">"${entry.NickName}"</div>`
+              : ""
+          }
+        </div>
+        <div class="card-id">${entry.UserID}</div>
+      </div>
+      <div class="card-actions">
+        <button class="icon-btn" onclick="viewEntry(${
+          entry.UserID
+        })" title="View">👁️</button>
+        <button class="icon-btn" onclick="editEntry(${
+          entry.UserID
+        })" title="Edit">✏️</button>
+        <button class="icon-btn" onclick="deleteEntry(${
+          entry.UserID
+        })" title="Delete">🗑️</button>
+      </div>
+      <div class="card-content">
+        ${
+          entry.FColor
+            ? `
+                        <div class="info-item">
+                            <div class="info-icon">🎨</div>
+                            <div>
+                                <div class="info-label">Favorite Color</div>
+                                <div class="info-value">${entry.FColor}</div>
+                            </div>
+                        </div>`
+            : ""
+        }
+                        
+                        ${
+                          entry.FFood
+                            ? `
+                        <div class="info-item">
+                            <div class="info-icon">🍕</div>
+                            <div>
+                                <div class="info-label">Favorite Food</div>
+                                <div class="info-value">${entry.FFood}</div>
+                            </div>
+                        </div>`
+                            : ""
+                        }
+                        
+                        ${
+                          entry.FMovie
+                            ? `
+                        <div class="info-item">
+                            <div class="info-icon">🎬</div>
+                            <div>
+                                <div class="info-label">Favorite Movie</div>
+                                <div class="info-value">${entry.FMovie}</div>
+                            </div>
+                        </div>`
+                            : ""
+                        }
+                        
+                        ${
+                          entry.FSong
+                            ? `
+                        <div class="info-item">
+                            <div class="info-icon">🎵</div>
+                            <div>
+                                <div class="info-label">Favorite Song</div>
+                                <div class="info-value">${entry.FSong}</div>
+                            </div>
+                        </div>`
+                            : ""
+                        }
+                        
+                        ${
+                          entry.FHobby
+                            ? `
+                        <div class="info-item">
+                            <div class="info-icon">⭐</div>
+                            <div>
+                                <div class="info-label">Hobby</div>
+                                <div class="info-value">${entry.FHobby}</div>
+                            </div>
+                        </div>`
+                            : ""
+                        }
+                        
+                        ${
+                          entry.DreamJob
+                            ? `
+                        <div class="info-item">
+                            <div class="info-icon">🚀</div>
+                            <div>
+                                <div class="info-label">Dream</div>
+                                <div class="info-value">${entry.DreamJob}</div>
+                            </div>
+                        </div>`
+                            : ""
+                        }
+                        
+                        ${
+                          entry.HappiestMemory
+                            ? `
+                        <div class="info-item">
+                            <div class="info-icon">💖</div>
+                            <div>
+                                <div class="info-label">Best Memory</div>
+                                <div class="info-value">${entry.HappiestMemory}</div>
+                            </div>
+                        </div>`
+                            : ""
+                        }
+                    </div>
+      ${
+        entry.FQuote ? `<div class="quote-section">"${entry.FQuote}"</div>` : ""
+      }
+      <div style="margin-top: 15px; font-size: 0.85em; color: #999;">📅 ${new Date(
+        entry.CreatedAt
+      ).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })}</div>
+    </div>
+  `
+          )
+          .join("");
+      }
+
+      // ===== VIEW ENTRY (READ-ONLY) =====
+      function viewEntry(id) {
+        const entry = allEntries.find((e) => e.UserID === id);
+        if (!entry) return;
+
+        viewingEntryId = id;
+
+        const sections = [
+          {
+            title: "Personal Information",
+            items: [
+              { label: "👤 Full Name", value: entry.FullName },
+              { label: "🏷️ Nickname", value: entry.NickName },
+              { label: "🎂 Birthday", value: entry.BDay },
+              { label: "⚧ Gender", value: entry.Gender },
+              { label: "📞 Contact", value: entry.ContactNumber },
+              { label: "📧 Email", value: entry.EmailAdd },
+            ],
+          },
+          {
+            title: "Favorite Things",
+            items: [
+              { label: "🎨 Color", value: entry.FColor },
+              { label: "🍔 Food", value: entry.FFood },
+              { label: "🎬 Movie", value: entry.FMovie },
+              { label: "📺 Series", value: entry.FSeries },
+              { label: "🎤 Artist", value: entry.FArtist },
+              { label: "🎵 Song", value: entry.FSong },
+              { label: "📚 Book", value: entry.FBook },
+              { label: "📖 Subject", value: entry.FSubject },
+              { label: "🏀 Hobby", value: entry.FHobby },
+              { label: "🌍 Place", value: entry.FPlace },
+              { label: "⚽ Sports", value: entry.FSports },
+              { label: "💬 Quote", value: entry.FQuote },
+            ],
+          },
+          {
+            title: "Dreams & Personality",
+            items: [
+              { label: "💼 Dream Job", value: entry.DreamJob },
+              { label: "🦸‍♂️ Superpower", value: entry.SuperPower },
+              { label: "😱 Biggest Fear", value: entry.BiggestFear },
+              {
+                label: "📝 Words That Describe You",
+                value: entry.WordsThatDescribesYou,
+              },
+              { label: "😊 Happiest Memory", value: entry.HappiestMemory },
+              { label: "😡 Pet Peeves", value: entry.PetPeeves },
+            ],
+          },
+          {
+            title: "Relationships",
+            items: [
+              { label: "👯 Best Friend", value: entry.BestFriend },
+              {
+                label: "💖 Relationship Status",
+                value: entry.RelationshipStatus,
+              },
+              { label: "🌟 Celebrity Crush", value: entry.CelebrityCrush },
+              { label: "😍 Current Crush", value: entry.Crush },
+              { label: "💌 Ideal Date", value: entry.IdealDate },
+              { label: "💒 Dream Wedding", value: entry.DreamWedding },
+            ],
+          },
+        ];
+
+        let html = sections
+          .map(
+            (section) => `
+    <div class="view-section">
+      <div class="view-section-title">${section.title}</div>
+      ${section.items
+        .map((item) =>
+          item.value
+            ? `
+          <div class="view-item">
+            <div class="view-label">${item.label}</div>
+            <div class="view-value">${item.value}</div>
+          </div>
+        `
+            : ""
+        )
+        .join("")}
+    </div>
+  `
+          )
+          .join("");
+
+        document.getElementById("viewModalContent").innerHTML = html;
+        document.getElementById("viewModal").classList.add("active");
+      }
+
+      function closeViewModal() {
+        document.getElementById("viewModal").classList.remove("active");
+        viewingEntryId = null;
+      }
+
+      function switchToEdit() {
+        closeViewModal();
+        editEntry(viewingEntryId);
+      }
+
+      // ===== EDIT ENTRY =====
+      function editEntry(id) {
+        const entry = allEntries.find((e) => e.UserID === id);
+        if (!entry) {
+          showMessage("Entry not found", "error");
+          return;
+        }
+
+        document.getElementById("modalTitle").textContent = "✏️ Edit Entry";
+
+        // Set userId FIRST
+        const userIdField = document.getElementById("userId");
+        if (userIdField) {
+          userIdField.value = id;
+          console.log("Set userId to:", id);
+        }
+
+        // Map of field IDs to entry properties
+        const fieldMap = {
+          userId: "UserID",
+          fullName: "FullName",
+          nickName: "NickName",
+          bday: "BDay",
+          gender: "Gender",
+          contactNumber: "ContactNumber",
+          emailAdd: "EmailAdd",
+          fColor: "FColor",
+          fFood: "FFood",
+          fMovie: "FMovie",
+          fSeries: "FSeries",
+          fArtist: "FArtist",
+          fSong: "FSong",
+          fBook: "FBook",
+          fSubject: "FSubject",
+          fHobby: "FHobby",
+          fPlace: "FPlace",
+          fSports: "FSports",
+          fQuote: "FQuote",
+          dreamJob: "DreamJob",
+          superPower: "SuperPower",
+          biggestFear: "BiggestFear",
+          wordsThatDescribesYou: "WordsThatDescribesYou",
+          happiestMemory: "HappiestMemory",
+          petPeeves: "PetPeeves",
+          bestFriend: "BestFriend",
+          relationshipStatus: "RelationshipStatus",
+          celebrityCrush: "CelebrityCrush",
+          crush: "Crush",
+          idealDate: "IdealDate",
+          dreamWedding: "DreamWedding",
+        };
+
+        // Fill form fields
+        Object.keys(fieldMap).forEach((fieldId) => {
+          const element = document.getElementById(fieldId);
+          if (element) {
+            element.value = entry[fieldMap[fieldId]] || "";
+            element.removeAttribute("disabled");
+          }
+        });
+
+        resetWizardToStep1();
+        document.getElementById("entryModal").classList.add("active");
+      }
+
+      // ===== DELETE ENTRY =====
+      async function deleteEntry(id) {
+        if (!confirm("Are you sure you want to delete this entry?")) return;
+
+        try {
+          const formData = new FormData();
+          formData.append("action", "delete");
+          formData.append("id", id);
+
+          const response = await fetch(API_URL, {
+            method: "POST",
+            body: formData,
+          });
+          const result = await response.json();
+
+          if (result.success) {
+            showMessage(result.message, "success");
+            loadEntries();
+          } else {
+            showMessage(result.message, "error");
+          }
+        } catch (error) {
+          showMessage("Error deleting entry", "error");
+        }
+      }
+
+      // ===== WIZARD FORM MANAGEMENT =====
+      function resetWizardToStep1() {
+        document
+          .querySelectorAll(".form-step")
+          .forEach((step) => step.classList.remove("active"));
+        document
+          .querySelector('.form-step[data-step="1"]')
+          .classList.add("active");
+        currentStepNumber = 1;
+        updateWizardUI();
+      }
+
+      function updateWizardUI() {
+        const progressPercent = (currentStepNumber / totalSteps) * 100;
+        document.getElementById("progressFill").style.width =
+          progressPercent + "%";
+        document.getElementById("currentStep").textContent = currentStepNumber;
+
+        document.getElementById("prevBtn").style.display =
+          currentStepNumber === 1 ? "none" : "block";
+        document.getElementById("nextBtn").style.display =
+          currentStepNumber === totalSteps ? "none" : "block";
+        document.getElementById("submitBtn").style.display =
+          currentStepNumber === totalSteps ? "block" : "none";
+      }
+
+      function changeStep(direction) {
+        const newStepNumber = currentStepNumber + direction;
+
+        if (direction === 1 && !validateStep(currentStepNumber)) return;
+        if (newStepNumber < 1 || newStepNumber > totalSteps) return;
+
+        document.querySelector(".form-step.active").classList.remove("active");
+        document
+          .querySelector(`.form-step[data-step="${newStepNumber}"]`)
+          .classList.add("active");
+
+        currentStepNumber = newStepNumber;
+        updateWizardUI();
+        document.querySelector(".modal-content").scrollTop = 0;
+      }
+
+      function validateStep(stepNumber) {
+        if (stepNumber === 1) {
+          if (!document.getElementById("fullName").value.trim()) {
+            showMessage("Please enter your full name", "error");
+            return false;
+          }
+          if (!document.getElementById("nickName").value.trim()) {
+            showMessage("Please enter a nickname", "error");
+            return false;
+          }
+        } else if (stepNumber === 2) {
+          const requiredFields = [
+            "fColor",
+            "fFood",
+            "fMovie",
+            "fSeries",
+            "fArtist",
+            "fSong",
+            "fHobby",
+            "fPlace",
+            "fSports",
+          ];
+          for (let field of requiredFields) {
+            if (!document.getElementById(field).value.trim()) {
+              showMessage("Please fill in all favorite fields", "error");
+              return false;
+            }
+          }
+        }
+        return true;
+      }
+
+      // ===== SEARCH FUNCTIONALITY =====
+      function performSearch() {
+        const column = document.getElementById("searchColumn").value;
+        const searchValue = document.getElementById("searchValue").value.trim();
+
+        if (!searchValue) {
+          showMessage("Please enter a search term", "error");
+          return;
+        }
+
+        const filtered = allEntries.filter((entry) => {
+          const fieldValue = entry[column];
+          return (
+            fieldValue &&
+            fieldValue.toLowerCase().includes(searchValue.toLowerCase())
+          );
+        });
+
+        const resultsDiv = document.getElementById("searchResults");
+
+        if (filtered.length === 0) {
+          resultsDiv.innerHTML =
+            '<p style="text-align: center; color: #999; padding: 20px;">No results found for "' +
+            searchValue +
+            '"</p>';
+        } else {
+          const columnLabel =
+            document.getElementById("searchColumn").options[
+              document.getElementById("searchColumn").selectedIndex
+            ].text;
+          resultsDiv.innerHTML =
+            '<h3 style="color: #5B532C; margin-bottom: 15px;">Found ' +
+            filtered.length +
+            " result(s):</h3>";
+          resultsDiv.innerHTML += filtered
+            .map(
+              (entry) => `
+      <div style="background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid #FFD93D;">
+        <strong style="color: #5B532C; font-size: 1.2em;">${
+          entry.FullName || "Anonymous"
+        }</strong>
+        ${
+          entry.NickName
+            ? '<span style="color: #f17203; font-style: italic;"> ("' +
+              entry.NickName +
+              '")</span>'
+            : ""
+        }
+        <br>
+        <span style="color: #666; font-size: 0.9em;">${columnLabel}: <strong style="color: #333;">${
+                entry[column]
+              }</strong></span>
+        <br>
+        <button onclick="closeSearchModal(); viewEntry(${
+          entry.UserID
+        })" style="margin-top: 10px; padding: 8px 16px; background: #FFD93D; color: white; border: none; border-radius: 5px; cursor: pointer;">View</button>
+        <button onclick="closeSearchModal(); editEntry(${
+          entry.UserID
+        })" style="margin-top: 10px; padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Edit</button>
+      </div>
+    `
+            )
+            .join("");
+        }
+
+        displayCards(filtered);
+      }
+
+      function clearSearch() {
+        document.getElementById("searchValue").value = "";
+        document.getElementById("searchResults").innerHTML = "";
+        displayCards(allEntries);
+      }
+
+      // ===== MODAL HELPERS =====
+      function openAddModal() {
+        document.getElementById("modalTitle").textContent =
+          " My Slam E-book 📝";
+        document.getElementById("slamebook").reset();
+        document.getElementById("userId").value = "";
+        resetWizardToStep1();
+        document.getElementById("entryModal").classList.add("active");
+      }
+
+      function closeModal() {
+        document.getElementById("entryModal").classList.remove("active");
+      }
+
+      function openSearchModal() {
+        document.getElementById("searchModal").classList.add("active");
+      }
+
+      function closeSearchModal() {
+        document.getElementById("searchModal").classList.remove("active");
+      }
+
+      function showMessage(message, type) {
+        const messageDiv = document.getElementById("message");
+        messageDiv.textContent = message;
+        messageDiv.className = `message ${type}`;
+        messageDiv.style.display = "block";
+        setTimeout(() => {
+          messageDiv.style.display = "none";
+        }, 4000);
+      }
+    </script>
+  </body>
+</html>
